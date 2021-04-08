@@ -1,0 +1,84 @@
+html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+
+.wrapper {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(50%, 50%) minmax(50%, 50%);
+}
+
+.create-note-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: black solid 5px;
+}
+
+
+.create-note {
+    background-color: yellow;
+    border: black solid 1px;
+    width: 50%;
+    height: 50%;
+
+
+}
+
+.display-note {
+    margin: 10px;
+    background-color: black;
+    width: 300px;
+    height: 300px;
+}
+
+.note-generator {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+
+
+
+.note-generator > input {
+
+    border-radius: 5px;
+    background-color: aqua;
+
+}
+
+.note-generator .subject, .detail {
+    margin: 20px;
+
+}
+
+.note-generator .subject > input, .detail > input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    /*margin: 20px;*/
+
+}
+
+.note-generator .subject > label, .detail > label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 1rem;
+
+
+}
+
+.note-generator > input {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}

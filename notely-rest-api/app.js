@@ -5,18 +5,22 @@ const logger = require('morgan')
 const bodyParser = require('body-parser')
 const debug = require('debug')
 const register = require('./routes/router.register')
+const path = require('path')
 
-app.use(bodyParser.json)
+app.use(express.static("public"));
+app.use(bodyParser.json())
 app.use(logger('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
 
 
 register(app);
 
-app.get('/', (req, res) => {
-    res.send('is this thing on?')
-})
+app.set('port', process.env.port || 3000)
 
-app.listen(port, () => {
+// app.post('/', (req, res) => {
+//     res.
+// })
+
+ const server = app.listen(app.get('port'), () => {
     console.log(`testing express app on port ${port}`)
 } )

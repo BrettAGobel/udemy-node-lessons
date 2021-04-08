@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Note Thingy</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+
+</head>
+<body>
+    <div class="wrapper">
+        <div class="create-note-wrapper">
+            <h1>Create a Note</h1>
+        <div class="create-note">
+
+            <form action="/api/note" method="post" class="note-generator">
+                <div class="subject">
+                    <label for="subject">Subject: </label>
+                    <input type="text" name="subject" id="subject" required>
+                </div>
+                <div class="detail">
+                    <label for="detail">Detail: </label>
+                    <input type="text" name="detail" id="detail" required>
+                </div>
+
+                    <input type="submit" value="Post Note" id="dont-refresh">
+
+            </form>
+        </div>
+        </div>
+        <div class="display-note">
+
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+</html>

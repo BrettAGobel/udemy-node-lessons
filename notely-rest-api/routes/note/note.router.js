@@ -1,7 +1,7 @@
 'use strict'
 const noteController = require('../../controllers/note.controller')
 const express = require('express')
-const  router = express.Router();
+const router = express.Router();
 
 
 router.get('/api/note', noteController.getAllNotes);
