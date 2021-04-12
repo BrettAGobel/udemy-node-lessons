@@ -2,6 +2,7 @@ const db = require('../models/index.js');
 const note = require('../models/note.js');
 const noteModel = note(db.sequelize,  db.Sequelize.DataTypes);
 
+
 const getAllNotes = (req, res) => {
     noteModel.findAll({
         where: {isDeleted: false}
@@ -19,17 +20,31 @@ const createNote = (req, res) => {
         subject: req.body.subject,
         detail: req.body.detail
     }).then ((note) => {
-        res.status(200).json({
-            status: 'success',
-            note: note,
-            message: ""
-        })
+        res.redirect(301, 'http://localhost:3000/index.html')
     }).catch(error => {
         res.status(200).json({
             status: 'failure'
         })
     })
 };
+
+// const createNote = (req, res) => {
+//     noteModel.create({
+//         subject: req.body.subject,
+//         detail: req.body.detail
+//     }).then((notes) => {
+//         res.status(200).json({
+//             status: 'success',
+//             notes: notes,
+//             message: ''
+//         })
+//     }).catch(note => {
+//           res.status(200).json({
+//               status: 'failure',
+//               note: note
+//          })
+//      })
+// };
 
 const getNote = (req, res) => {
     noteModel.findByPk(req.params.id)

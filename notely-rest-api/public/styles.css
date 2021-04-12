@@ -1,8 +1,30 @@
 html {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
+}
+
+.dropdown li {
+    list-style: none;
+}
+
+body {
+
+    margin: 0;
+    padding: 0;
 }
 *, *:before, *:after {
     box-sizing: inherit;
+}
+
+.nav{
+    padding: 0 1rem;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    height: auto;
+    background: darkgrey;
 }
 
 
@@ -31,6 +53,22 @@ html {
 }
 
 .display-note {
+    display: grid;
+    grid-template: 1fr 1fr/1fr 1fr;
+}
+
+.note-wrapper {
+    grid-column: 1/3;
+    grid-row: 1/3;
+    display: flex;
+    flex: 1 ;
+    flex-direction: row;
+    justify-content: space-around;
+
+
+}
+
+.note {
     margin: 10px;
     background-color: black;
     width: 300px;

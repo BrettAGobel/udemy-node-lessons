@@ -7,6 +7,24 @@
 
 </head>
 <body>
+<nav class="nav">
+    <h1>Notely</h1>
+
+    <div class="dropdown">
+        <input type="checkbox">
+        <ul>
+        <li><form action="#" method="post" class="login">
+        <li><label for="username">username: </label>
+        <input type="email" name="username" id="username"></li>
+        <li><label for="password">password: </label>
+        <input type="text" name="password" id="password"></li>
+        <input type="submit" value="login" id="login">
+        <input type="submit" value="sign-up" id="sign-up"></li>
+    </form>
+        </ul>
+
+    </div>
+</nav>
     <div class="wrapper">
         <div class="create-note-wrapper">
             <h1>Create a Note</h1>
@@ -22,13 +40,17 @@
                     <input type="text" name="detail" id="detail" required>
                 </div>
 
-                    <input type="submit" value="Post Note" id="dont-refresh">
+                    <input type="submit" value="Post Note" id="dont-refresh" onclick="preventDefault()" onsubmit="return false">
 
             </form>
         </div>
         </div>
         <div class="display-note">
+            <div class="note-wrapper">
+                <div class="note"></div>
+                <div class="note"></div>
 
+            </div>
         </div>
     </div>
     <script src="index.js"></script>

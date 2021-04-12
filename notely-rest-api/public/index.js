@@ -1,9 +1,10 @@
 let form = document.getElementById('dont-refresh')
 
 
-    form.addEventListener('submit', (event) => {
+   let preventDefault = function () { form.addEventListener('click', (event) => {
         event.preventDefault()
-    })
+    })};
+
 
 
 
