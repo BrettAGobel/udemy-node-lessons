@@ -4,10 +4,6 @@ html {
     box-sizing: border-box;
 }
 
-.dropdown li {
-    list-style: none;
-}
-
 body {
 
     margin: 0;
@@ -16,6 +12,74 @@ body {
 *, *:before, *:after {
     box-sizing: inherit;
 }
+
+.dropdown li {
+
+    list-style: none;
+}
+
+
+.dropdown {
+    position: relative;
+}
+
+
+.dropdown ul {
+    margin-top: 0;
+    padding: 0;
+}
+
+
+#login-toggle {
+    visibility: hidden;
+    position: relative;
+
+}
+
+#login-toggle ~ label {
+
+    background-image: url("./hamburger-menu.png") ;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+}
+
+#login-toggle ~ label {
+
+}
+
+
+
+
+
+
+
+
+
+#login-toggle {
+    margin:  1rem;
+}
+
+.login {
+    padding: 1rem 1rem 1rem;
+    background-color: darkgrey;
+    display: none;
+    position: absolute;
+    /*top: 100%;*/
+    left: -150px;
+}
+
+.login-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
 
 .nav{
     padding: 0 1rem;
@@ -74,6 +138,8 @@ body {
     width: 300px;
     height: 300px;
 }
+
+
 
 .note-generator {
     height: 100%;

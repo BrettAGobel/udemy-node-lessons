@@ -11,17 +11,22 @@
     <h1>Notely</h1>
 
     <div class="dropdown">
-        <input type="checkbox">
-        <ul>
-        <li><form action="#" method="post" class="login">
-        <li><label for="username">username: </label>
-        <input type="email" name="username" id="username"></li>
-        <li><label for="password">password: </label>
-        <input type="text" name="password" id="password"></li>
-        <input type="submit" value="login" id="login">
-        <input type="submit" value="sign-up" id="sign-up"></li>
+        <input type="checkbox" id="login-toggle">
+        <label for="login-toggle"></label>
+        <form action="#" method="post" class="login">
+            <ul>
+        <li>
+        <input type="email" name="username" id="username" value="Email"></li>
+       <li>
+        <input type="text" name="password" id="password" value="Password"></li>
+
+            </ul>
+            <div class="login-buttons">
+            <input type="submit" value="login" id="login">
+            <input type="submit" value="sign-up" id="sign-up">
+            </div>
     </form>
-        </ul>
+
 
     </div>
 </nav>
@@ -40,7 +45,7 @@
                     <input type="text" name="detail" id="detail" required>
                 </div>
 
-                    <input type="submit" value="Post Note" id="dont-refresh" onclick="preventDefault()" onsubmit="return false">
+                    <input type="submit" value="Post Note" id="note-submit" onclick="preventDefault()" onsubmit="return false">
 
             </form>
         </div>
