@@ -8,6 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      userId: {
+        type: Sequelize.UUIDV4,
+        allowNull: false,
+        references: {
+          model: 'Users',
+          key: 'id'
+        }
+      },
       subject: {
         type: Sequelize.STRING
       },
@@ -18,6 +26,7 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
