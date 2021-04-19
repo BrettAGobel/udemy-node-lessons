@@ -1,6 +1,31 @@
 const db = require('../models/index.js');
 const note = require('../models/note.js');
 const noteModel = note(db.sequelize,  db.Sequelize.DataTypes);
+const user = require ('../models/user')
+const userModel = user(db.sequelize, db.Sequelize.DataTypes)
+
+
+
+const signUpRedirect = (req, res) => {
+    res.sendFile('C:/Users/brett/Desktop/Node-lessons/udemy-node-lessons/notely-rest-api/public/SignUp.html')
+}
+
+const signInRedirect = (req, res) => {
+    res.sendFile('C:/Users/brett/Desktop/Node-lessons/udemy-node-lessons/notely-rest-api/public/SignIn.html')
+}
+
+
+const signUp = (req, res) => {
+    userModel.create({
+        username: req.body.username,
+        password: req.body.password
+    }).then(() => {
+        res.status(200).json({
+            status: 'success',
+
+        })
+    })
+}
 
 
 const getAllNotes = (req, res) => {
@@ -92,6 +117,9 @@ module.exports = {
     createNote: createNote,
     getNote: getNote,
     editNote: editNote,
-    deleteNote: deleteNote
+    deleteNote: deleteNote,
+    signUp: signUp,
+    signUpRedirect: signUpRedirect,
+    signInRedirect: signInRedirect
 };
 
