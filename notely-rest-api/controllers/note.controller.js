@@ -1,9 +1,11 @@
+require('dotenv').config()
 const db = require('../models/index.js');
 const note = require('../models/note.js');
 const noteModel = note(db.sequelize,  db.Sequelize.DataTypes);
 const user = require ('../models/user')
 const userModel = user(db.sequelize, db.Sequelize.DataTypes)
-
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 
 const signUpRedirect = (req, res) => {
@@ -15,17 +17,68 @@ const signInRedirect = (req, res) => {
 }
 
 
-const signUp = (req, res) => {
-    userModel.create({
-        username: req.body.username,
-        password: req.body.password
-    }).then(() => {
+const signUp = async (req, res) => {
+    try {
+        const salt = await bcrypt.genSalt()
+        const hashPass = await bcrypt.hash(req.body.password, salt)
+        console.log(salt)
+        console.log(hashPass)
+        await userModel.create({
+            username: req.body.username,
+            password: hashPass
+        })
+        res.status(200).json({
+            status: 'success'
+        })
+    }
+    catch (err) {
+        res.status(500).json()
+    }
+    // userModel.create({
+    //     username: req.body.username,
+    //     password: req.body.password
+    // }).then(() => {
+    //     res.status(200).json({
+    //         status: 'success',
+    //
+    //     })
+    // })
+}
+
+// const login = async (req, res) => {
+//         const user = req.body.username
+//         const accessToken = await jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+//     res.json({
+//         accessToken
+//     })
+//
+// }
+
+const login =  (req, res) => {
+    userModel.findOne({
+        where: {
+            username: req.body.username
+        }
+        }
+    ).then((data) => {
         res.status(200).json({
             status: 'success',
+            data: data
 
         })
     })
 }
+
+// const authenticateToken = (req, res, next) => {
+//     const authHeader = req.headers['authorization']
+//     const token = authHeader && authHeader.split(' ')[1]
+//     if (token === null) return res.sendStatus(401)
+//
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//         if (err) return res.sendStatus(403)
+//         req.user = user
+//     })
+// }
 
 
 const getAllNotes = (req, res) => {
@@ -120,6 +173,7 @@ module.exports = {
     deleteNote: deleteNote,
     signUp: signUp,
     signUpRedirect: signUpRedirect,
-    signInRedirect: signInRedirect
+    signInRedirect: signInRedirect,
+    login: login
 };
 

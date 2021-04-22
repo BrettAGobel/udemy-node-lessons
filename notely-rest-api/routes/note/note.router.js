@@ -3,11 +3,15 @@ const noteController = require('../../controllers/note.controller')
 const express = require('express')
 const router = express.Router();
 
-router.get('/SignUp', noteController.signUpRedirect)
 
-router.get('/SignIn', noteController.signInRedirect)
 
-router.post('/api/user', noteController.signUp)
+router.get('/SignUp', noteController.signUpRedirect);
+
+router.get('/SignIn', noteController.signInRedirect);
+
+router.post('/api/user', noteController.signUp);
+
+router.post('/api/login', noteController.login);
 
 router.get('/api/note', noteController.getAllNotes);
 
