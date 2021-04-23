@@ -54,20 +54,24 @@ const signUp = async (req, res) => {
 //
 // }
 
-const login =  (req, res) => {
-    userModel.findOne({
-        where: {
-            username: req.body.username
-        }
-        }
-    ).then((data) => {
-        res.status(200).json({
-            status: 'success',
-            data: data
-
+const login = async (req, res) => {
+    let user = await userModel.findOne({
+            where: {
+                username: req.body.username
+            }
         })
-    })
+         let passString = req.body.password
+        await bcrypt.compare(passString, user.password, (err, matches) => {
+            if (err) {
+                throw err
+            } else if (!matches) {
+                console.log('passwords do not match')
+            } else {
+                console.log('matches!')
+            }
+        })
 }
+
 
 // const authenticateToken = (req, res, next) => {
 //     const authHeader = req.headers['authorization']
