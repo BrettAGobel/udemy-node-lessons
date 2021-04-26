@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 
+
 const signUpRedirect = (req, res) => {
     res.sendFile('C:/Users/brett/Desktop/Node-lessons/udemy-node-lessons/notely-rest-api/public/SignUp.html')
 }
@@ -18,6 +19,7 @@ const signInRedirect = (req, res) => {
 
 
 const signUp = async (req, res) => {
+
     try {
         const salt = await bcrypt.genSalt()
         const hashPass = await bcrypt.hash(req.body.password, salt)
@@ -60,16 +62,36 @@ const login = async (req, res) => {
                 username: req.body.username
             }
         })
+    // res.json({user : user})
          let passString = req.body.password
-        await bcrypt.compare(passString, user.password, (err, matches) => {
+         await bcrypt.compare(passString, user.password, (err, matches) => {
             if (err) {
                 throw err
             } else if (!matches) {
                 console.log('passwords do not match')
             } else {
                 console.log('matches!')
+                const accessToken =  jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET)
+                res.json({ accessToken: accessToken })
+
             }
         })
+}
+
+function authenticateToken (req, res, next) {
+    const authHeader = req.headers['authorization']
+    const token  = authHeader && authHeader.split(' ')[1]
+    if (token == null) {
+        return res.sendStatus(401)
+    }
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.sendStatus(403)
+        }
+        req.user.username = user
+        next()
+    })
+
 }
 
 
@@ -178,6 +200,7 @@ module.exports = {
     signUp: signUp,
     signUpRedirect: signUpRedirect,
     signInRedirect: signInRedirect,
-    login: login
+    login: login,
+    authenticateToken: authenticateToken
 };
 
