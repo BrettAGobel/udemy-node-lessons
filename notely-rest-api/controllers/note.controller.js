@@ -74,6 +74,8 @@ const login = async (req, res) => {
                 const accessToken =  jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET)
                 res.json({ accessToken: accessToken })
 
+
+
             }
         })
 }
@@ -120,9 +122,11 @@ const getAllNotes = (req, res) => {
 };
 
 const createNote = (req, res) => {
+    authenticateToken(req)
     noteModel.create({
         subject: req.body.subject,
-        detail: req.body.detail
+        detail: req.body.detail,
+
     }).then ((note) => {
         res.redirect(301, 'http://localhost:3000/index.html')
     }).catch(error => {

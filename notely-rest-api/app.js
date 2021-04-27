@@ -7,6 +7,7 @@ const debug = require('debug')
 const register = require('./routes/router.register')
 const path = require('path')
 
+
 app.use(express.static("public"));
 app.use(bodyParser.json())
 app.use(logger('dev'))
