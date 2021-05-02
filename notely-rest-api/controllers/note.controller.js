@@ -36,15 +36,6 @@ const signUp = async (req, res) => {
     catch (err) {
         res.status(500).json()
     }
-    // userModel.create({
-    //     username: req.body.username,
-    //     password: req.body.password
-    // }).then(() => {
-    //     res.status(200).json({
-    //         status: 'success',
-    //
-    //     })
-    // })
 }
 
 // const login = async (req, res) => {
@@ -57,31 +48,90 @@ const signUp = async (req, res) => {
 // }
 
 const login = async (req, res) => {
-    let user = await userModel.findOne({
+    try {
+        let user = await userModel.findOne({
             where: {
-                username: req.body.username
+                username: req.body.username,
             }
         })
-    // res.json({user : user})
-         let passString = req.body.password
-         await bcrypt.compare(passString, user.password, (err, matches) => {
-            if (err) {
-                throw err
-            } else if (!matches) {
+
+        bcrypt.compare(req.body.password, user.password).then((result) => {
+            if (!result) {
                 console.log('passwords do not match')
             } else {
                 console.log('matches!')
-                const accessToken =  jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET)
-                res.json({ accessToken: accessToken })
-
-
+                const accessToken = jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET)
+                res.setHeader('auth-token', accessToken.toString())
+                res.cookie('token', accessToken, {
+                                secure: false, // set to true if your using https
+                                httpOnly: true,
+                            })
+                res.redirect('/')
 
             }
         })
+    }
+    catch (err) {
+        console.log(err)
+    }
+
+        // then((err, matches) => {
+            //     if (err) {
+            //         throw err
+            //     } else if (!matches) {
+            //         console.log('passwords do not match')
+            //     } else {
+            //         console.log('matches!')
+            //         const accessToken =  jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET)
+            //         res.setHeader('auth-token', accessToken)
+            //
+            //
+            //     }
+            // })
+
+//-- ATTEMPT TO STORE IN COOKIE --//
+
+    // bcrypt.compare(req.body.password, user.password, (err, matches) => {
+    //     if (err) {
+    //         throw err
+    //     } else if (!matches) {
+    //         console.log('passwords do not match')
+    //     } else {
+    //         console.log('matches!')
+    //         const accessToken =  jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET)
+    //         res.setHeader('auth-token', accessToken)
+    //         return  res.cookie('token', accessToken, {
+    //             secure: false, // set to true if your using https
+    //             httpOnly: true,
+    //         })
+    //
+    //
+    //     }
+    // })
+
+
 }
 
-function authenticateToken (req, res, next) {
-    const authHeader = req.headers['authorization']
+function authenticateTokenHeader (req, res, next) {
+    console.log('beginning verification of token')
+    const authHeader = req.headers['auth-token']
+    const token  = authHeader && authHeader.split(' ')[1]
+    if (token == null) {
+        return res.sendStatus(401)
+    }
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.sendStatus(403)
+        }
+        req.user.username = user
+        next()
+    })
+
+}
+
+function authenticateTokenCookie (req, res, next) {
+    console.log('beginning verification of token')
+    const authHeader = req.headers['auth-token']
     const token  = authHeader && authHeader.split(' ')[1]
     if (token == null) {
         return res.sendStatus(401)
@@ -121,8 +171,8 @@ const getAllNotes = (req, res) => {
     })
 };
 
-const createNote = (req, res) => {
-    authenticateToken(req)
+const createNote = async (req, res) => {
+    await authenticateTokenHeader(req)
     noteModel.create({
         subject: req.body.subject,
         detail: req.body.detail,
@@ -205,6 +255,6 @@ module.exports = {
     signUpRedirect: signUpRedirect,
     signInRedirect: signInRedirect,
     login: login,
-    authenticateToken: authenticateToken
+    authenticateTokenHeader: authenticateTokenHeader
 };
 
