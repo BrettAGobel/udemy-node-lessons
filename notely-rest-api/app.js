@@ -6,12 +6,14 @@ const bodyParser = require('body-parser')
 const debug = require('debug')
 const register = require('./routes/router.register')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 
-
+app.use(cookieParser())
 app.use(express.static("public"));
 app.use(bodyParser.json())
 app.use(logger('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
+
 
 
 register(app);

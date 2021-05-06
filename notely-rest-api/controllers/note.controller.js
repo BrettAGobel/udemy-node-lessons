@@ -6,6 +6,7 @@ const user = require ('../models/user')
 const userModel = user(db.sequelize, db.Sequelize.DataTypes)
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser')
 
 
 
@@ -112,26 +113,43 @@ const login = async (req, res) => {
 
 }
 
-function authenticateTokenHeader (req, res, next) {
-    console.log('beginning verification of token')
-    const authHeader = req.headers['auth-token']
-    const token  = authHeader && authHeader.split(' ')[1]
-    if (token == null) {
-        return res.sendStatus(401)
-    }
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) {
-            return res.sendStatus(403)
-        }
-        req.user.username = user
-        next()
-    })
+// function authenticateTokenHeader (req, res, next) {
+//     console.log('beginning verification of token')
+//     const authHeader = req.headers['auth-token']
+//     const token  = authHeader && authHeader.split(' ')[1]
+//     if (token == null) {
+//         return res.sendStatus(401)
+//     }
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//         if (err) {
+//             return res.sendStatus(403)
+//         }
+//         req.user.username = user
+//         next()
+//     })
+//
+// }
 
+
+async function checkUser (req, res) {
+    const authHeader = await req.cookies['token']
+    jwt.verify(authHeader, process.env.ACCESS_TOKEN_SECRET, (err, match) => {
+        if (err) {
+            console.log('token does not match')
+        } else if (match) {
+            console.log('correct token')
+        }
+    })
 }
 
+
+
+
+
+
 function authenticateTokenCookie (req, res, next) {
-    console.log('beginning verification of token')
-    const authHeader = req.headers['auth-token']
+
+
     const token  = authHeader && authHeader.split(' ')[1]
     if (token == null) {
         return res.sendStatus(401)
@@ -172,8 +190,9 @@ const getAllNotes = (req, res) => {
 };
 
 const createNote = async (req, res) => {
-    await authenticateTokenHeader(req)
+
     noteModel.create({
+
         subject: req.body.subject,
         detail: req.body.detail,
 
@@ -255,6 +274,7 @@ module.exports = {
     signUpRedirect: signUpRedirect,
     signInRedirect: signInRedirect,
     login: login,
-    authenticateTokenHeader: authenticateTokenHeader
+    // authenticateTokenHeader: authenticateTokenHeader,
+    checkUser: checkUser
 };
 
