@@ -55,17 +55,23 @@ const login = async (req, res) => {
                 username: req.body.username,
             }
         })
-
+        console.log(user)
+    let payload = {
+            Username: user.username
+    }
+    let d = new Date()
+        d.setTime(d.getTime() + 2*60*1000)
         bcrypt.compare(req.body.password, user.password).then((result) => {
             if (!result) {
                 console.log('passwords do not match')
             } else {
                 console.log('matches!')
-                const accessToken = jwt.sign(user.username, process.env.ACCESS_TOKEN_SECRET)
+                const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET)
                 res.setHeader('auth-token', accessToken.toString())
                 res.cookie('token', accessToken, {
                                 secure: false, // set to true if your using https
                                 httpOnly: true,
+                                expires: d
                             })
                 res.redirect('/')
 
@@ -131,14 +137,23 @@ const login = async (req, res) => {
 // }
 
 
-async function checkUser (req, res) {
-    const authHeader = await req.cookies['token']
-    jwt.verify(authHeader, process.env.ACCESS_TOKEN_SECRET, (err, match) => {
+async function checkUser (req, res, next) {
+    const token = await req.cookies['token']
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, match) => {
         if (err) {
             console.log('token does not match')
         } else if (match) {
-            console.log('correct token')
+            console.log(match)
+            let user =  userModel.findOne({
+                where: {
+                    username: match.Username
+                }
+            })
+            return user
         }
+
+    }).then(user => {
+        console.log(user.id)
     })
 }
 
@@ -146,23 +161,23 @@ async function checkUser (req, res) {
 
 
 
-
-function authenticateTokenCookie (req, res, next) {
-
-
-    const token  = authHeader && authHeader.split(' ')[1]
-    if (token == null) {
-        return res.sendStatus(401)
-    }
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) {
-            return res.sendStatus(403)
-        }
-        req.user.username = user
-        next()
-    })
-
-}
+//
+// function authenticateTokenCookie (req, res, next) {
+//
+//
+//     const token  = authHeader && authHeader.split(' ')[1]
+//     if (token == null) {
+//         return res.sendStatus(401)
+//     }
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+//         if (err) {
+//             return res.sendStatus(403)
+//         }
+//         req.user.username = user
+//         next()
+//     })
+//
+// }
 
 
 // const authenticateToken = (req, res, next) => {
@@ -191,12 +206,14 @@ const getAllNotes = (req, res) => {
 
 const createNote = async (req, res) => {
 
+
+
+
     noteModel.create({
 
         subject: req.body.subject,
-        detail: req.body.detail,
-
-    }).then ((note) => {
+        detail: req.body.detail
+        }).then ((note) => {
         res.redirect(301, 'http://localhost:3000/index.html')
     }).catch(error => {
         res.status(200).json({
