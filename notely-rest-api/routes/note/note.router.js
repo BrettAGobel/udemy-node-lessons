@@ -3,7 +3,7 @@ const noteController = require('../../controllers/note.controller')
 const express = require('express')
 const router = express.Router();
 
-router.get('/api/check-user', noteController.checkUser);
+// router.get('/api/check-user', noteController.checkUser);
 
 router.get('/SignUp', noteController.signUpRedirect);
 

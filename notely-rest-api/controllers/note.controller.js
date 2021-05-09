@@ -137,25 +137,30 @@ const login = async (req, res) => {
 // }
 
 
-async function checkUser (req, res, next) {
-    const token = await req.cookies['token']
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, match) => {
-        if (err) {
-            console.log('token does not match')
-        } else if (match) {
-            console.log(match)
-            let user =  userModel.findOne({
-                where: {
-                    username: match.Username
-                }
-            })
-            return user
-        }
-
-    }).then(user => {
-        console.log(user.id)
-    })
-}
+// async function checkUser (req, res, next) {
+//     const token = await req.cookies['token']
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, match) => {
+//         if (err) {
+//             res.json({
+//                 message: "token did not match"
+//             })
+//         } else if (match) {
+//             console.log(match)
+//             let user =  userModel.findOne({
+//                 where: {
+//                     username: match.Username
+//                 }
+//             })
+//             return user
+//         }
+//
+//     }).then(user => {
+//         console.log(user.id)
+//         let userId =  user.id
+//
+//
+//     })
+// }
 
 
 
@@ -206,20 +211,43 @@ const getAllNotes = (req, res) => {
 
 const createNote = async (req, res) => {
 
+    const token = await req.cookies['token']
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, match) => {
+        if (err) {
+            res.json({
+                message: "token did not match"
+            })
+        } else if (match) {
+            console.log(match)
+            let user =  userModel.findOne({
+                where: {
+                    username: match.Username
+                }
+            })
+            return user
+        }
 
+    }).then(user => {
+        console.log(user.id)
+        let userId =  user.id
 
-
-    noteModel.create({
-
-        subject: req.body.subject,
-        detail: req.body.detail
+        noteModel.create({
+            userId: userId,
+            subject: req.body.subject,
+            detail: req.body.detail
         }).then ((note) => {
-        res.redirect(301, 'http://localhost:3000/index.html')
-    }).catch(error => {
-        res.status(200).json({
-            status: 'failure'
+            res.redirect(301, 'http://localhost:3000/index.html')
+        }).catch(error => {
+            res.status(200).json({
+                status: error
+            })
         })
+
     })
+
+
+
+
 };
 
 // const createNote = (req, res) => {
@@ -292,6 +320,6 @@ module.exports = {
     signInRedirect: signInRedirect,
     login: login,
     // authenticateTokenHeader: authenticateTokenHeader,
-    checkUser: checkUser
+    // checkUser: checkUser
 };
 

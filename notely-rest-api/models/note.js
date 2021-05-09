@@ -11,12 +11,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Note.associate = (models) => {
-        Note.belongsTo(models.user, {foreignKey: 'userId', as: 'Users'})
+        Note.belongsTo(models.user, {foreignKey: 'userId'})
       }
       // define association here
     }
   };
   Note.init({
+    userId: {
+      foreignKey: true,
+      type: DataTypes.UUIDV4,
+      defaultValue: DataTypes.UUIDV4
+    },
     subject: DataTypes.STRING,
     detail: DataTypes.STRING,
     isDeleted: DataTypes.BOOLEAN
