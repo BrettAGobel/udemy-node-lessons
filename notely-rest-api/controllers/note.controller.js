@@ -197,17 +197,38 @@ const login = async (req, res) => {
 // }
 
 
-const getAllNotes = (req, res) => {
-    noteModel.findAll({
-        where: {isDeleted: false}
-    }).then((notes) => {
-        res.status(200).json({
-            status: 'success',
-            notes: notes,
-            message: ''
+const getAllNotes = async (req, res) => {
+        const token = await req.cookies['token']
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, match) => {
+            if (err) {
+                res.json({
+                    message: "token did not match"
+                })
+            } else if (match) {
+                console.log(match)
+                let user = userModel.findOne({
+                    where: {
+                        username: match.Username
+                    }
+                })
+                return user
+            }
+
+        }).then(user => {
+            console.log(user.id)
+            let userId = user.id
+
+            noteModel.findAll({
+                where: {userId: userId}
+            }).then((notes) => {
+                if (notes) {
+                    return res.json({
+                        notes
+                    })
+                 }
+            })
         })
-    })
-};
+    };
 
 const createNote = async (req, res) => {
 
